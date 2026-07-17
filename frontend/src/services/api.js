@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // La URL base de la API FastAPI
 // En local usará el puerto 8000, en producción Nginx lo enrutará internamente
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+const API_URL = import.meta.env.PROD ? '/api/v1' : 'http://127.0.0.1:8000/api/v1';
 
 const apiClient = axios.create({
   baseURL: API_URL,
