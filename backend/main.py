@@ -3,12 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from routers import auth, profile, projects, upload, contact
+from database import create_db_and_tables
 
 app = FastAPI(
     title="Portafolio API",
-    description="API RESTful para mvargasdev.online",
-    version="1.0.0",
+    description="API para el portafolio web personal",
+    version="1.0.0"
 )
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
 # Configuración estricta de CORS para Frontend y producción
 origins = [

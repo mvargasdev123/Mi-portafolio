@@ -1,10 +1,12 @@
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 import jwt
 import bcrypt
 
-# En producción, esto deberá venir de variables de entorno (.env)
-SECRET_KEY = "clave-super-secreta-de-desarrollo-portafolio"
+# En producción, esto vendrá de variables de entorno seguras de AWS (.env)
+# Si no existe (como en tu PC local), usa la clave por defecto
+SECRET_KEY = os.environ.get("SECRET_KEY", "clave-super-secreta-de-desarrollo-portafolio")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120 # El token durará 2 horas
 
