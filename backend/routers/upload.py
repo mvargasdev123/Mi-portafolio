@@ -9,23 +9,42 @@ router = APIRouter(
     tags=["Uploads"]
 )
 
-# La ruta será absoluta basada en dónde se encuentra este archivo para evitar errores si ejecutas el comando desde otro lado
+# La ruta será absoluta basada en dónde se encuentra este archivo para evitar errores
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 UPLOAD_DIR = os.path.join(BASE_DIR, "frontend", "public", "uploads")
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def upload_image(file: UploadFile = File(...), current_admin=Depends(get_current_admin)):
-    """Recibe una imagen y la guarda en la carpeta pública del frontend."""
-    # Validación simple de que sea una imagen
+    """Recibe una imagen con validación estricta de seguridad (Lista Blanca, Tamaño, Sanitización)."""
+    
+    # 1. Validación de extensión estricta (Lista Blanca)
+    ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+    file_extension = os.path.splitext(file.filename)[1].lower()
+    
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Extensión no permitida. Solo se admiten: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+        
+    # 2. Validación MIME type estricta
     if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="El archivo no es una imagen válida.")
+        raise HTTPException(status_code=400, detail="El tipo de archivo no coincide con una imagen válida.")
+        
+    # 3. Validación de Tamaño (Máximo 5MB)
+    MAX_FILE_SIZE = 5 * 1024 * 1024 # 5 MB en bytes
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0) # Regresar el cursor al inicio para poder guardarlo
+    
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="La imagen es demasiado grande. Tamaño máximo permitido: 5MB.")
     
     # Crear carpeta si no existe
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     
-    # Generar nombre único para evitar sobreescribir archivos con el mismo nombre
-    file_extension = file.filename.split(".")[-1]
-    unique_filename = f"{uuid.uuid4().hex}.{file_extension}"
+    # Sanitización: Generar nombre 100% aleatorio sin rastros del original
+    unique_filename = f"{uuid.uuid4().hex}{file_extension}"
     file_path = os.path.join(UPLOAD_DIR, unique_filename)
     
     # Guardar archivo físicamente

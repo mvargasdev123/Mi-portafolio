@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProjects, createProject, updateProject, deleteProject, logoutAdmin } from '../services/api';
+import { getProjects, createProject, updateProject, deleteProject, logoutAdmin, getMessages } from '../services/api';
 import ProjectForm from '../components/ProjectForm';
 
 const Dashboard = () => {
@@ -33,6 +33,42 @@ const Dashboard = () => {
   const handleLogout = () => {
     logoutAdmin();
     navigate('/');
+  };
+
+  const handleDownloadMessages = async () => {
+    try {
+      const msgs = await getMessages();
+      if (msgs.length === 0) {
+        alert("No hay mensajes en la bandeja de entrada todavía.");
+        return;
+      }
+      
+      const headers = ["ID", "Fecha", "Nombre", "Correo", "Mensaje"];
+      const csvRows = [headers.join(",")];
+      
+      for (const m of msgs) {
+        const safeMessage = `"${m.message.replace(/"/g, '""').replace(/\n/g, " ")}"`;
+        const row = [
+          m.id,
+          new Date(m.created_at).toLocaleString(),
+          `"${m.name}"`,
+          `"${m.email}"`,
+          safeMessage
+        ];
+        csvRows.push(row.join(","));
+      }
+      
+      const blob = new Blob([csvRows.join("\\n")], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `mensajes_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert("Error conectando con la base de datos de mensajes.");
+    }
   };
 
   const handleDelete = async (slug) => {
@@ -90,7 +126,10 @@ const Dashboard = () => {
         <div className="admin-content">
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
             <h2 style={{color: 'var(--text-primary)'}}>Tus Proyectos Públicos</h2>
-            <button className="btn-primary" onClick={() => setIsCreating(true)}>+ Nuevo Proyecto</button>
+            <div style={{display: 'flex', gap: '1rem'}}>
+              <button className="btn-secondary" onClick={handleDownloadMessages} style={{background: 'var(--bg-card)', color: 'var(--primary-color)', border: '1px solid var(--primary-color)'}}>📥 Descargar CSV de Mensajes</button>
+              <button className="btn-primary" onClick={() => setIsCreating(true)}>+ Nuevo Proyecto</button>
+            </div>
           </div>
           
           {loading ? (

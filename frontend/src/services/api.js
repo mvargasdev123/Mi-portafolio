@@ -74,6 +74,7 @@ export const logoutAdmin = () => {
 export const createProject = (data) => apiClient.post('/projects', data).then(res => res.data);
 export const updateProject = (slug, data) => apiClient.put(`/projects/${slug}`, data).then(res => res.data);
 export const deleteProject = (slug) => apiClient.delete(`/projects/${slug}`).then(res => res.data);
+export const getMessages = () => apiClient.get('/contact').then(res => res.data);
 
 export const uploadImage = async (file) => {
   const formData = new FormData();

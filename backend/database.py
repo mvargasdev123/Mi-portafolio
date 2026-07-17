@@ -3,7 +3,7 @@ from sqlmodel import create_engine, SQLModel, Session
 
 # Si la variable de entorno DATABASE_URL existe (AWS RDS), usa esa. 
 # De lo contrario, crea una base local en SQLite (perfecta para desarrollo).
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./portfolio.db")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./data/portfolio.db")
 
 # AWS y SQLAlchemy prefieren postgresql:// en lugar de postgres://
 if DATABASE_URL.startswith("postgres://"):

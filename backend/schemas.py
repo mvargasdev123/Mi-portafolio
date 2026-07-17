@@ -84,10 +84,5 @@ class Project(ProjectBase):
     id: int
 
 # -----------------
-# CONTACT
+# CONTACT (Eliminado, ahora se usa el modelo de SQLModel directamente en models.py)
 # -----------------
-class ContactMessage(BaseModel):
-    name: str = Field(..., min_length=2, max_length=100)
-    email: EmailStr
-    subject: str = Field(..., min_length=2, max_length=200)
-    message: str = Field(..., min_length=10)

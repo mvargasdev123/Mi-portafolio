@@ -1,5 +1,9 @@
-from fastapi import APIRouter
-from schemas import ContactMessage
+from fastapi import APIRouter, Depends
+from sqlmodel import Session, select
+from typing import List
+from models import ContactMessage
+from database import get_session
+from .auth import get_current_admin
 
 router = APIRouter(
     prefix="/api/v1/contact",
@@ -7,16 +11,18 @@ router = APIRouter(
 )
 
 @router.post("", status_code=200)
-async def send_contact_message(message: ContactMessage):
-    """
-    Recibe los datos del formulario de contacto del portafolio.
-    (Actualmente es una simulación (mock). En el futuro se puede conectar
-    a un servicio de mensajería como AWS SES o guardarlo en la Base de Datos).
-    """
-    # Aquí irá la lógica de Rate Limiting y envío de correo real.
+async def send_contact_message(message: ContactMessage, session: Session = Depends(get_session)):
+    """Recibe los datos del formulario de contacto y los guarda en la base de datos."""
+    session.add(message)
+    session.commit()
     
-    # Simulación de procesamiento exitoso:
     return {
         "status": "success", 
         "message": f"¡Gracias por contactarme, {message.name}! He recibido tu mensaje y te responderé pronto a {message.email}."
     }
+
+@router.get("", response_model=List[ContactMessage])
+async def list_messages(session: Session = Depends(get_session), current_admin=Depends(get_current_admin)):
+    """Obtiene todos los mensajes de contacto (Solo Administrador)."""
+    messages = session.exec(select(ContactMessage).order_by(ContactMessage.created_at.desc())).all()
+    return messages
