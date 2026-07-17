@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile
     container_name: portafolio-frontend
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./frontend/public/uploads:/usr/share/nginx/html/uploads
     depends_on:
