@@ -1,9 +1,14 @@
 import os
 from sqlmodel import create_engine, SQLModel, Session
 
+# Resolver ruta absoluta para evitar errores de directorio
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
 # Si la variable de entorno DATABASE_URL existe (AWS RDS), usa esa. 
-# De lo contrario, crea una base local en SQLite (perfecta para desarrollo).
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./data/portfolio.db")
+# De lo contrario, crea una base local en SQLite.
+DATABASE_URL = os.environ.get("DATABASE_URL", f"sqlite:///{os.path.join(DATA_DIR, 'portfolio.db')}")
 
 # AWS y SQLAlchemy prefieren postgresql:// en lugar de postgres://
 if DATABASE_URL.startswith("postgres://"):

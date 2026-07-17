@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./backend/data:/app/data
+      - ./backend/data:/app/backend/data
       - ./frontend/public/uploads:/app/frontend/public/uploads
     restart: always
 
