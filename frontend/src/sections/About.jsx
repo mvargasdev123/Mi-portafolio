@@ -1,6 +1,6 @@
 import React from 'react';
 import { useProfile, useExperience } from '../hooks/useApi';
-import SkillGrid from '../components/SkillGrid';
+import TechSphere from '../components/TechSphere';
 
 const About = () => {
   const { data: profile, loading: profileLoading } = useProfile();
@@ -38,10 +38,12 @@ const About = () => {
           )}
         </div>
 
-        {/* COLUMNA DERECHA: Grilla de Habilidades */}
+        {/* COLUMNA DERECHA: Esfera 3D de Tecnologías */}
         <div className="about-skills">
           <h2 className="section-title text-gradient">Habilidades</h2>
-          <SkillGrid />
+          <div style={{ width: '100%', height: '100%' }}>
+            <TechSphere />
+          </div>
         </div>
         
       </div>
