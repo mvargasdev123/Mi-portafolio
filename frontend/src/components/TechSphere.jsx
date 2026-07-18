@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, TrackballControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -52,12 +52,21 @@ function SkillIcon({ skill, position, isHoveredGroup, setHoveredGroup }) {
 
 function Sphere({ setHoveredGroup, hoveredGroup, skills }) {
   const groupRef = useRef();
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const positions = useMemo(() => {
     const count = skills.length;
     const pos = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); // ángulo dorado
-    const radius = 2.8;
+    const radius = isMobile ? 1.6 : 2.8;
 
     for (let i = 0; i < count; i++) {
       const y = 1 - (i / (count - 1)) * 2; 
@@ -71,7 +80,7 @@ function Sphere({ setHoveredGroup, hoveredGroup, skills }) {
       pos.push(new THREE.Vector3(x * radius, y * radius, z * radius));
     }
     return pos;
-  }, [skills.length]);
+  }, [skills.length, isMobile]);
 
   useFrame(() => {
     if (groupRef.current && !hoveredGroup) {
