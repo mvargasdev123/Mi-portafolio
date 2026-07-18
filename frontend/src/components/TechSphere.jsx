@@ -66,7 +66,7 @@ function Sphere({ setHoveredGroup, hoveredGroup, skills }) {
     const count = skills.length;
     const pos = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); // ángulo dorado
-    const radius = isMobile ? 1.6 : 2.8;
+    const radius = isMobile ? 2.0 : 2.8;
 
     for (let i = 0; i < count; i++) {
       const y = 1 - (i / (count - 1)) * 2; 
