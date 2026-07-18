@@ -9,6 +9,7 @@ Portafolio personal web altamente optimizado, desarrollado con una arquitectura 
 
 ## ✨ Características Principales
 
+*   **Experiencia 3D y Parallax (Three.js & Framer Motion):** Esfera de tecnologías en 3D (`@react-three/fiber`) completamente dinámica que reacciona a la base de datos de proyectos, tarjetas de proyecto con efecto "Tilt" interactivo y scroll reveal supersuave.
 *   **Diseño Premium (Glassmorphism):** Interfaz inmersiva, modo oscuro con acentos Cyan/Púrpura y micro-animaciones (Scroll Reveal, Typing Effects).
 *   **Mobile-First & Accesible:** 100% responsivo y testeado contra los estándares de accesibilidad `a11y` de web.dev.
 *   **CMS Privado (Dashboard):** Sistema de administración oculto y protegido por JWT que permite crear, editar y eliminar proyectos sin tocar una sola línea de código.
@@ -50,6 +51,7 @@ Portafolio personal web altamente optimizado, desarrollado con una arquitectura 
 Asegúrate de tener Docker y Docker Compose instalados.
 ```bash
 # Levantar toda la infraestructura en segundo plano
+# Nota: Usamos --build para asegurar que se instalen las nuevas dependencias 3D (Three.js, Framer Motion)
 docker-compose up -d --build
 ```
 *El frontend estará disponible en `http://localhost:80` y la API en `http://localhost:8000`.*

@@ -1,45 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const RevealOnScroll = ({ children }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Cuando entra en la pantalla
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Opcional: Desconectar después de la primera vez
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        threshold: 0.15, // Activar cuando el 15% del elemento sea visible
-      }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => {
-      if (ref.current) observer.unobserve(ref.current);
-    };
-  }, []);
+const RevealOnScroll = ({ children, delay = 0, direction = 'up' }) => {
+  // Configuración de direcciones para la animación
+  const directions = {
+    up: { y: 60, x: 0 },
+    down: { y: -60, x: 0 },
+    left: { x: 60, y: 0 },
+    right: { x: -60, y: 0 },
+    none: { x: 0, y: 0 }
+  };
 
   return (
-    <div
-      ref={ref}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
-        transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-        willChange: 'opacity, transform'
+    <motion.div
+      initial={{ 
+        opacity: 0, 
+        ...directions[direction]
+      }}
+      whileInView={{ 
+        opacity: 1, 
+        x: 0, 
+        y: 0 
+      }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ 
+        duration: 0.8, 
+        delay: delay,
+        ease: [0.16, 1, 0.3, 1] // Curva de aceleración muy suave, estilo Apple/Premium
       }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 };
 
