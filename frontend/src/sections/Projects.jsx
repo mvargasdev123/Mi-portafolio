@@ -41,9 +41,30 @@ const Project3DCard = ({ project }) => {
       className="project-card glass-panel"
     >
       <div style={{ transform: "translateZ(40px)", transformStyle: "preserve-3d", height: "100%", display: "flex", flexDirection: "column" }}>
-        <div className="project-image-placeholder" style={{ transform: "translateZ(30px)", boxShadow: "0 15px 25px rgba(0,0,0,0.4)" }}>
-          {/* Aquí conectaremos la imagen real más adelante */}
-          <h3 className="project-placeholder-title" style={{ transform: "translateZ(20px)" }}>{project.title}</h3>
+        <div className="project-image-container" style={{ transform: "translateZ(30px)", boxShadow: "0 15px 25px rgba(0,0,0,0.4)", height: "200px", overflow: "hidden", position: "relative", borderRadius: "12px 12px 0 0", background: "linear-gradient(135deg, var(--bg-secondary), rgba(6, 182, 212, 0.1))" }}>
+          {project.cover_image ? (
+            <img 
+              src={project.cover_image} 
+              alt={project.title} 
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+          ) : null}
+          <div 
+            className="project-image-placeholder" 
+            style={{ 
+              display: project.cover_image ? 'none' : 'flex', 
+              width: '100%', 
+              height: '100%', 
+              alignItems: 'center', 
+              justifyContent: 'center' 
+            }}
+          >
+            <h3 className="project-placeholder-title" style={{ transform: "translateZ(20px)" }}>{project.title}</h3>
+          </div>
         </div>
         <div className="project-info" style={{ transform: "translateZ(20px)", flex: 1, display: "flex", flexDirection: "column" }}>
           <h3 className="project-title" style={{ transform: "translateZ(15px)" }}>{project.title}</h3>

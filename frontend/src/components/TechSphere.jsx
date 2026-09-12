@@ -24,8 +24,10 @@ const baseSkills = [
   { id: 'linux', name: 'Linux', icon: <FaLinux size={40} color="#FCC624" />, exp: 'Administración de servidores', emoji: '🐧', dynamic: false },
   
   // Habilidades ocultas que aparecerán automáticamente cuando agregues proyectos con estas etiquetas
+  { id: 'flutter', name: 'Flutter', icon: <SiFlutter size={40} color="#02569B" />, exp: 'Desarrollo de aplicaciones móvil y web', emoji: '📱', dynamic: true, hideIfZero: false },
+  
+  // Habilidades ocultas que aparecerán automáticamente cuando agregues proyectos con estas etiquetas
   { id: 'java', name: 'Java', icon: <FaJava size={40} color="#007396" />, emoji: '☕', dynamic: true, hideIfZero: true },
-  { id: 'flutter', name: 'Flutter', icon: <SiFlutter size={40} color="#02569B" />, emoji: '📱', dynamic: true, hideIfZero: true },
   { id: 'postgresql', name: 'PostgreSQL', icon: <SiPostgresql size={40} color="#336791" />, emoji: '🐘', dynamic: true, hideIfZero: true },
   { id: 'mongodb', name: 'MongoDB', icon: <SiMongodb size={40} color="#47A248" />, emoji: '🍃', dynamic: true, hideIfZero: true },
 ];
@@ -116,7 +118,12 @@ export default function TechSphere() {
       let count = 0;
       if (projectsData) {
         projectsData.forEach(p => {
-          if (p.technologies && p.technologies.some(t => t.toLowerCase() === skill.name.toLowerCase() || t.toLowerCase() === skill.id.toLowerCase())) {
+          if (p.technologies && p.technologies.some(t => {
+            const lowerT = t.toLowerCase();
+            const lowerId = skill.id.toLowerCase();
+            const lowerName = skill.name.toLowerCase();
+            return lowerT === lowerId || lowerT === lowerName || lowerT.includes(lowerId) || lowerT.includes(lowerName);
+          })) {
             count++;
           }
         });
